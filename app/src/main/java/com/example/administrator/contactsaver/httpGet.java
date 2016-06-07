@@ -29,9 +29,9 @@ public class httpGet {
     }
     public String startLink(){
         try {
-            System.out.println(PATH);
+           // System.out.println(PATH);
             HttpURLConnection connection=(HttpURLConnection)url.openConnection();
-            System.out.println("OPEN LINK");
+            //System.out.println("OPEN LINK");
             connection.setConnectTimeout(10000);
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
@@ -58,7 +58,7 @@ public class httpGet {
                     }
                     result=new String(outputStream.toByteArray(),"utf-8");
 //                    System.out.println(result);
-//                    Log.i("return",result);
+                  //  Log.i("return",result);
                     out.close();
                     in.close();
 
@@ -71,8 +71,109 @@ public class httpGet {
             in.close();
         }catch (IOException e){
             e.printStackTrace();
-            Log.i("err",e.getMessage());
+            Log.i("err", e.getMessage());
         }
         return null;
     }
+
+    public String startSaveContact(){
+        try {
+            HttpURLConnection connection=(HttpURLConnection)url.openConnection();
+            connection.setConnectTimeout(10000);
+            connection.setRequestMethod("POST");
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+
+            byte[] data=postStr.getBytes();
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//            connection.setRequestProperty("Content-Type", "application/Json");
+            connection.setRequestProperty("Content-Length", String.valueOf(data.length));
+
+            OutputStream out=connection.getOutputStream();
+            out.write(data, 0, data.length);
+            out.close();
+
+            InputStream in=connection.getInputStream();
+
+            if(connection.getResponseCode()==200){
+                ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+                byte[] datain=new byte[1024];
+                int len=0;
+                String result="";
+
+                if(in!=null){
+                    while((len=in.read(datain))!=-1){
+                        outputStream.write(datain,0,len);
+                    }
+                    result=new String(outputStream.toByteArray(),"utf-8");
+//                    System.out.println(result);
+                  //  Log.i("return",result);
+                    out.close();
+                    in.close();
+
+                    return result;
+
+                }
+
+            }
+//            out.close();
+            in.close();
+
+        }catch (IOException e){
+            e.printStackTrace();
+            Log.i("err", e.getMessage());
+        }
+        return null;
+    }
+
+    public String getJSONstring(){
+        try {
+            HttpURLConnection connection=(HttpURLConnection)url.openConnection();
+            connection.setConnectTimeout(10000);
+            connection.setRequestMethod("POST");
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+
+            byte[] data=postStr.getBytes();
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//            connection.setRequestProperty("Content-Type", "application/Json");
+            connection.setRequestProperty("Content-Length", String.valueOf(data.length));
+
+            OutputStream out=connection.getOutputStream();
+            out.write(data, 0, data.length);
+            out.close();
+
+            InputStream in=connection.getInputStream();
+
+            if(connection.getResponseCode()==200){
+                ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+                byte[] datain=new byte[1024];
+                int len=0;
+                String result="";
+
+                if(in!=null){
+                    while((len=in.read(datain))!=-1){
+                        outputStream.write(datain,0,len);
+                    }
+                    result=new String(outputStream.toByteArray(),"utf-8");
+//                    System.out.println(result);
+                  //  Log.i("return",result);
+                    out.close();
+                    in.close();
+
+                    return result;
+
+                }
+
+            }
+//            out.close();
+            in.close();
+
+        }catch (IOException e){
+            e.printStackTrace();
+            Log.i("err", e.getMessage());
+        }
+        return null;
+    }
+
 }

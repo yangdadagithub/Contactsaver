@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,10 +55,52 @@ public class GetPhoneNumberFromMobile {
                     number=data;
             }
             dataCursor.close();
-            PhoneInfo phoneInfo=new PhoneInfo(name,number);
-            list.add(phoneInfo);
+            if(name!=null&&number!=null) {
+                PhoneInfo phoneInfo = new PhoneInfo(name, number);
+                list.add(phoneInfo);
+            }else {
+                continue;
+            }
         }
         idcursor.close();
         return list;
+    }
+    public String contact2Json(Context context){
+//        JSONObject jsonObject=new JSONObject();
+        JSONArray jsonArray=new JSONArray();
+        ContentResolver resolver=context.getContentResolver();
+        Uri uri=Uri.parse("content://com.android.contacts/contacts");
+        Cursor idcursor=resolver.query(uri,new String[]{"_id"},null,null,null);
+        while (idcursor.moveToNext()){
+            int id=idcursor.getInt(0);
+            uri=Uri.parse("content://com.android.contacts/contacts/" + id + "/data");
+            Cursor dataCursor=resolver.query(uri,new String[]{"data1","mimetype"},null,null,null);
+            String name=null,number=null;
+            while (dataCursor.moveToNext()){
+                String data=dataCursor.getString(0);
+                String type=dataCursor.getString(1);
+                if("vnd.android.cursor.item/name".equals(type))
+                    name=data;
+                else if("vnd.android.cursor.item/phone_v2".equals(type))
+                    number=data;
+            }
+            dataCursor.close();
+            try {
+                JSONObject jsonObject=new JSONObject();
+                if(number!=null||name!=null){
+                jsonObject.put("number",number);
+                jsonObject.put("name", name);
+                jsonArray.put(jsonObject);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+//            PhoneInfo phoneInfo=new PhoneInfo(name,number);
+//            list.add(phoneInfo);
+        }
+        idcursor.close();
+        String JSONstr=jsonArray.toString();
+        return JSONstr;
     }
 }
